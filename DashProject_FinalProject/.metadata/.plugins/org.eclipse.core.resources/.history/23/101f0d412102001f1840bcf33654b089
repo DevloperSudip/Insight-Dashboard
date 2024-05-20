@@ -1,0 +1,89 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        	<script type="text/javascript">
+			function getSelectedCourse()
+			{
+			alert("hello ")	
+				var selectedcourse = document.getElementById('coursename').value;
+				//alert(selectedcourse);
+				
+				if(selectedcourse !== "")
+				{
+					var xhr = new XMLHttpRequest();
+					xhr.open("GET", "/getCoursePrices?selectedcourse="+selectedcourse, true);
+					xhr.onreadystatechange = function() {
+						if(xhr.readyState === 4 && xhr.status === 200)
+						{
+							var response = JSON.parse(xhr.responseText);
+							
+							var product = response;
+							
+							var discountedprice = product.discountedprice;
+							var originalprice = product.originalprice;
+							
+							document.getElementById("originalpriceid").textContent = originalprice;
+							document.getElementById("discountedpriceid").textContent = discountedprice;
+							
+							$("#priceDivId").css("visibility", "visible");
+						}
+					};
+					xhr.send();
+				}
+				else
+				{
+					$("#priceDivId").css("visibility", "hidden");
+				}
+			}
+		</script>
+</head>
+<body>
+ <jsp:include page="header-employee.jsp" />
+
+<div class="container-fluid">
+			<div class="container">
+	
+	
+				<div class="row">
+					<div class="col-3"></div>
+					<div class="col-6 d-flex justify-content-center">
+						<div class="addemp_div_design bg-light">
+							<h3>stock share details  </h3>
+							<br />
+							<form action="addEmpForm" method="post" >
+								<div class="mb-3">
+									<label class="form-label">Input stock Code</label>
+									<select  id="coursename" Class="form-select" onchange="getSelectedCourse()">
+										<%-- <option value="">Selected Course</option>
+										<option items="${model_coursename_list}" /> --%>
+										<option value="${model_coursename_list}" disabled selected>Select a Course</option>
+										
+									</select>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Start date</label>
+									<input type="date" name="startdate" id="startdate" Class="form-control"/>
+								</div>
+								
+								<input type="submit" value="Forcast" class="btn btn-primary" />
+							</form>
+						</div>
+					</div>
+					<div class="col-3"></div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>
